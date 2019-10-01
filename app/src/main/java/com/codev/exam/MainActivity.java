@@ -1,5 +1,6 @@
 package com.codev.exam;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -8,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -21,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private Context mContext;
     private TextView txtMessage;
     private EditText edtSpeech;
-    private AudioClass audio;
+    // private AudioClass audio;
 
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -55,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         mContext = MainActivity.this;
         txtMessage = findViewById(R.id.txtMessage);
         edtSpeech = findViewById(R.id.edtSpeech);
-        audio = new AudioClass(MainActivity.this);
+        // audio = new AudioClass(MainActivity.this);
 
         if (!isBluetoothHeadsetConnected()) {
             txtMessage.setText("Waiting for device.");
@@ -70,14 +72,23 @@ public class MainActivity extends AppCompatActivity {
         this.registerReceiver(mReceiver, filter);
 
         findViewById(R.id.btnPlay).setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onClick(View v) {
-            // audio.playAudio();
-            // txtMessage.setText("Now playing audio..\nTo restart program, please close the app.");
+            AudioClass a = new AudioClass(MainActivity.this);
+           a.playAudio();
+//            // txtMessage.setText("Now playing audio..\nTo restart program, please close the app.");
+//
+//            String speech = edtSpeech.getText().toString();
+//
+//            if (speech.length() <= 0) {
+//                txtMessage.setText("Please type a message.");
+//            } else {
+//                audio.playTTS(speech);
+//                txtMessage.setText("Now playing '" + speech + "'");
+//            }
 
-            String speech = edtSpeech.getText().toString();
-            audio.playTTS(speech);
-            txtMessage.setText("Now playing '" + speech + "'");
+
             }
         });
     }
@@ -90,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        audio.shutdownTTS();
+        // audio.shutdownTTS();
         super.onPause();
     }
 }
